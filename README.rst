@@ -27,7 +27,7 @@ Usage
   4 cokking
   5 sleep
 
-  $ joyn -D , -d 1:, -d 2:' ' -f 1:3 -f 2:1 user.csv hobby.txt
+  $ joyn -- / cut -d , -f 3 / cut -d " " -f 1 / user.csv hobby.txt
   1,taro,1,soccer
   2,ichiro,3,running
   3,hanako,4,cokking
@@ -78,6 +78,52 @@ Usage
   2020-01-02 05:49:46 [INFO] POST /73be8aa5-f619-4274-a0da-9531114cbaf9/profile/edit 200 Firefox 20s
   2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/profile 200 Firefox 20s
   2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/logout 200 Firefox 20s
+  2020-01-02 13:17:13 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s
+
+.. code-block:: shell
+
+  $ cat app.log
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/logout 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/profile 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] POST /6724ee60-01f3-4605-b4fb-8ca23af7085a/profile/edit 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/profile 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/logout 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/logout 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/profile 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] POST /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/profile/edit 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/profile 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/logout 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/logout 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/profile 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] POST /73be8aa5-f619-4274-a0da-9531114cbaf9/profile/edit 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/profile 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/logout 200 Firefox 20s
+  2020-01-02 13:17:13 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s
+
+  $ user.csv
+  id,name
+  6ddbfb64-0b7b-488f-8300-e34cd243d4aa,taro
+  a31743ac-41ab-42bb-bee2-8825ddbe9f35,ichiro
+  68137b2e-d771-492f-980d-5862f27b8821,hanako
+  9fb7c8e0-6276-409a-8815-051a9f354cd0,john
+  36858cb5-2ae5-4b7b-b94e-51170a3844f9,bob
+
+  $ joyn -- / bash -c "grep -E '\s/([^/]+)/[^s]+\s' | sed -e 's,^/,,g' -e 's,/.*,,g'" / cut -d , -f 2 / app.log user.csv
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/logout 200 Firefox 20s 
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/profile 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] POST /6724ee60-01f3-4605-b4fb-8ca23af7085a/profile/edit 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/profile 200 Firefox 20s
+  2020-01-02 02:33:20 [INFO] GET /6724ee60-01f3-4605-b4fb-8ca23af7085a/logout 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/logout 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/profile 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] POST /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/profile/edit 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/profile 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /944db4d1-35ec-45a5-8f1e-c3d2d437b8cb/logout 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/logout 200 Firefox 20s 73be8aa5-f619-4274-a0da-9531114cbaf9 john
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/profile 200 Firefox 20s 73be8aa5-f619-4274-a0da-9531114cbaf9 john
+  2020-01-02 05:49:46 [INFO] POST /73be8aa5-f619-4274-a0da-9531114cbaf9/profile/edit 200 Firefox 20s 73be8aa5-f619-4274-a0da-9531114cbaf9 john
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/profile 200 Firefox 20s 73be8aa5-f619-4274-a0da-9531114cbaf9 john
+  2020-01-02 05:49:46 [INFO] GET /73be8aa5-f619-4274-a0da-9531114cbaf9/logout 200 Firefox 20s 73be8aa5-f619-4274-a0da-9531114cbaf9 john
   2020-01-02 13:17:13 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s
 
 Installation
