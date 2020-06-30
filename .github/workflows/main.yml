@@ -7,7 +7,7 @@ on:
     types: [published]
 
 env:
-  APP_NAME: 'APPNAME'
+  APP_NAME: 'joyn'
   NIM_VERSION: '1.2.0'
 
 jobs:

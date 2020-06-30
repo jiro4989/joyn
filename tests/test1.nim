@@ -1,6 +1,6 @@
 import unittest
 
-include APPNAME
+include joyn
 
 suite "suite":
   test "test":
