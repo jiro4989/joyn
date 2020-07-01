@@ -1,7 +1,8 @@
-import sequtils
+import sequtils, streams
 
 const
   version = "v0.1.0"
+  slideWindowWidth = 1000
 
 type
   Args = object
@@ -36,8 +37,35 @@ proc splitArgs(args: seq[string]): Args =
   result.firstFile = args[0]
   result.secondFile = args[1]
 
-proc joyn(args: seq[string]): int =
-  echo args
+proc joyn(rawargs: seq[string]): int =
+  let args = rawargs.splitArgs()
+
+  var
+    firstStream = args.firstFile.newFileStream(fmRead)
+    secondStream = args.secondFile.newFileStream(fmRead)
+    firstLineCnt: int
+    secondLineCnt: int
+
+  defer:
+    firstStream.close
+    secondStream.close
+
+  while not firstStream.atEnd:
+    let line = firstStream.readLine
+    inc firstLineCnt
+    if firstLineCnt == slideWindowWidth:
+      echo firstLineCnt, ":", line
+      firstLineCnt = 0
+
+      while not secondStream.atEnd:
+        let line = secondStream.readLine
+        inc secondLineCnt
+        if secondLineCnt == slideWindowWidth:
+          echo secondLineCnt, ":", line
+          secondLineCnt = 0
+
+      secondStream.close
+      secondStream = args.secondFile.newFileStream(fmRead)
 
 when isMainModule and not defined modeTest:
   import cligen
