@@ -61,7 +61,7 @@ proc parseByCharacter(s, param: string): string =
   for k in toSeq(poses.keys).sorted:
     result.add(runes[k])
 
-proc parseByField(s, param: string): string =
+proc parseByField(s, delim, field: string): string =
   discard
 
 proc parseByRegexp(s, param: string): string =
@@ -97,39 +97,25 @@ proc joyn(rawargs: seq[string]): int =
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
-    firstLineCnt: int
-    secondStream = args.secondFile.newFileStream(fmRead)
-    secondLineCnt: int
 
   defer:
     firstStream.close
-    secondStream.close
-
-  var
-    matchLieno: Table[string, int]
 
   while not firstStream.atEnd:
-    let line = firstStream.readLine
-    inc firstLineCnt
-    decho line
-    let got = "a"
-    decho got
-    matchLieno[got] = 1
-    if firstLineCnt == slideWindowWidth:
-      echo firstLineCnt, ":", line
-      firstLineCnt = 0
+    let leftLine = firstStream.readLine
+    decho leftLine
+    let leftGot = parseByCharacter(leftLine, args.firstCmd[1])
+    decho leftGot
 
-      while not secondStream.atEnd:
-        let line = secondStream.readLine
-        inc secondLineCnt
-        if secondLineCnt == slideWindowWidth:
-          echo secondLineCnt, ":", line
-          secondLineCnt = 0
-
-      secondStream.close
-      secondStream = args.secondFile.newFileStream(fmRead)
-
-  echo matchLieno
+    var secondStream = args.secondFile.newFileStream(fmRead)
+    while not secondStream.atEnd:
+      let rightLine = secondStream.readLine
+      decho rightLine
+      let rightGot = parseByCharacter(rightLine, args.secondCmd[1])
+      if leftGot == rightGot:
+        echo leftLine, ":", rightLine
+    secondStream.close
+    secondStream = args.secondFile.newFileStream(fmRead)
 
 when isMainModule and not defined modeTest:
   import cligen
