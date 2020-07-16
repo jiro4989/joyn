@@ -42,13 +42,22 @@ suite "proc splitArgs":
 suite "proc parseByCharacter":
   setup:
     const s = "foobar"
+    const s2 = "あいうえお"
   test "normal: 1 character":
     let want = "f"
     let got = parseByCharacter(s, "1")
     check want == got
+  test "normal: 1 multibyte character":
+    let want = "あ"
+    let got = parseByCharacter(s2, "1")
+    check want == got
   test "normal: comma separated characters (1,2,3)":
     let want = "foo"
     let got = parseByCharacter(s, "1,2,3")
+    check want == got
+  test "normal: comma separated multibyte characters (1,2,3,5)":
+    let want = "あいうお"
+    let got = parseByCharacter(s2, "1,2,3,5")
     check want == got
   test "normal: comma separated characters (1,4)":
     let want = "fb"
