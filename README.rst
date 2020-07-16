@@ -27,7 +27,7 @@ Usage
   4 cokking
   5 sleep
 
-  $ joyn -- / cut -d , -f 3 / cut -d " " -f 1 / user.csv hobby.txt
+  $ joyn -- / -d , -f 3 / -d " " -f 1 / user.csv hobby.txt
   1,taro,1,soccer
   2,ichiro,3,running
   3,hanako,4,cokking

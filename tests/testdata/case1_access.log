@@ -1,0 +1,8 @@
+2020-01-01 12:01:02 [INFO] controller.nim (c012vlh) "GET /users/taro/profile 200 0.5s"
+2020-01-01 12:01:02 [INFO] controller.nim (abfghjz) "GET /users/ichiro/profile 200 0.5s"
+2020-01-01 12:02:03 [INFO] controller.nim (1boDboa) "GET /users/taro/profile/update 200 0.5s"
+2020-01-01 12:02:03 [INFO] controller.nim (1boDboa) "GET /users/ichiro/profile/update 200 0.5s"
+2020-01-01 12:03:04 [INFO] controller.nim (c012vlh) "GET /users/taro/profile 200 0.5s"
+2020-01-01 12:03:04 [INFO] controller.nim (abfghjz) "GET /users/ichiro/profile 200 0.5s"
+2020-01-01 12:04:05 [INFO] controller.nim (1boDboa) "GET /users/taro/logout 200 0.5s"
+2020-01-01 12:04:05 [INFO] controller.nim (abfghjz) "GET /users/ichiro/logout 200 0.5s"

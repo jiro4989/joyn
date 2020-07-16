@@ -16,6 +16,9 @@ requires "cligen >= 1.0.0"
 
 import os, strformat
 
+const
+  testDataDir = "tests"/"testdata"
+
 task archive, "Create archived assets":
   let app = "joyn"
   let assets = &"{app}_{buildOS}"
@@ -29,3 +32,7 @@ task archive, "Create archived assets":
       exec &"7z a {assets}.zip {assets}"
     else:
       exec &"tar czf {assets}.tar.gz {assets}"
+
+task case1, "Run case 1":
+  exec "nimble build"
+  exec &"./bin/joyn -- / -c 44-50 / -c 1-7 / {testDataDir}/case1_access.log {testDataDir}/case1_userids.txt"
