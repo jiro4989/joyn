@@ -98,3 +98,8 @@ suite "proc parseByCharacter":
       discard parseByCharacter(s, ",")
     expect(InvalidCharacterParamError):
       discard parseByCharacter(s, ",1")
+  test "abnormal: index out of bounds":
+    expect(InvalidCharacterParamError):
+      discard parseByCharacter(s, "7")
+    expect(InvalidCharacterParamError):
+      discard parseByCharacter(s, "1-9")

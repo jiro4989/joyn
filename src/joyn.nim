@@ -49,9 +49,13 @@ proc parseByCharacter(s, param: string): string =
       if endStr != "":
         endNum = endStr.parseInt
       for i in beginNum .. endNum:
+        if runes.len < i:
+          raiseErr()
         poses[i-1] = true
       continue
     let i = col.parseInt
+    if runes.len < i:
+      raiseErr()
     poses[i-1] = true
 
   for k in toSeq(poses.keys).sorted:
