@@ -1,4 +1,5 @@
-import sequtils, streams
+import strutils, sequtils, streams, tables, unicode
+from algorithm import sorted
 
 const
   version = "v0.1.0"
@@ -11,6 +12,56 @@ type
     secondCmd: seq[string]
     secondFile: string
   InvalidArgsError = object of CatchableError
+  InvalidCharacterParamError = object of CatchableError
+
+template decho(x) =
+  when not defined release:
+    debugEcho x
+
+proc parseByCharacter(s, param: string): string =
+  template raiseErr = raise newException(InvalidCharacterParamError, "need parameter")
+
+  if param.len < 1:
+    raiseErr()
+
+  let
+    runes = s.toRunes
+    cols = param.split(",")
+  var
+    poses: Table[int, bool]
+
+  for col in cols:
+    if col.len < 1:
+      raiseErr()
+    let
+      beginEnd = col.split("-")
+    if 2 <= beginEnd.len:
+      let
+        beginStr = beginEnd[0]
+        endStr = beginEnd[1]
+      if beginStr.len < 1 and endStr.len < 1:
+        raiseErr()
+      var
+        beginNum = 1
+        endNum = runes.len
+      if beginStr != "":
+        beginNum = beginStr.parseInt
+      if endStr != "":
+        endNum = endStr.parseInt
+      for i in beginNum .. endNum:
+        poses[i-1] = true
+      continue
+    let i = col.parseInt
+    poses[i-1] = true
+
+  for k in toSeq(poses.keys).sorted:
+    result.add(runes[k])
+
+proc parseByField(s, param: string): string =
+  discard
+
+proc parseByRegexp(s, param: string): string =
+  discard
 
 proc getArgsAndDelete(args: var seq[string], delim: string): seq[string] =
   var m = args.high
@@ -42,17 +93,24 @@ proc joyn(rawargs: seq[string]): int =
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
-    secondStream = args.secondFile.newFileStream(fmRead)
     firstLineCnt: int
+    secondStream = args.secondFile.newFileStream(fmRead)
     secondLineCnt: int
 
   defer:
     firstStream.close
     secondStream.close
 
+  var
+    matchLieno: Table[string, int]
+
   while not firstStream.atEnd:
     let line = firstStream.readLine
     inc firstLineCnt
+    decho line
+    let got = "a"
+    decho got
+    matchLieno[got] = 1
     if firstLineCnt == slideWindowWidth:
       echo firstLineCnt, ":", line
       firstLineCnt = 0
@@ -66,6 +124,8 @@ proc joyn(rawargs: seq[string]): int =
 
       secondStream.close
       secondStream = args.secondFile.newFileStream(fmRead)
+
+  echo matchLieno
 
 when isMainModule and not defined modeTest:
   import cligen
