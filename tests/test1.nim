@@ -18,11 +18,13 @@ suite "proc parseArgs":
       firstAction: ActionParam(
         kind: akCut,
         chars: "1-15",
+        delim: " ",
         ),
       firstFile: "c.txt",
       secondAction: ActionParam(
         kind: akCut,
         chars: "1,2,3",
+        delim: " ",
         ),
       secondFile: "d.txt",
     )
@@ -33,11 +35,13 @@ suite "proc parseArgs":
       firstAction: ActionParam(
         kind: akCut,
         chars: "1-15",
+        delim: " ",
         ),
       firstFile: "c.txt",
       secondAction: ActionParam(
         kind: akCut,
         chars: "1,2,3",
+        delim: " ",
         ),
       secondFile: "d.txt",
     )
