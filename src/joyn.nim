@@ -168,21 +168,31 @@ proc joyn(rawargs: seq[string]): int =
   defer:
     firstStream.close
 
-  # while not firstStream.atEnd:
-  #   let leftLine = firstStream.readLine
-  #   decho leftLine
-  #   let leftGot = parseByCharacter(leftLine, args.firstCmd[1])
-  #   decho leftGot
-  # 
-  #   var secondStream = args.secondFile.newFileStream(fmRead)
-  #   while not secondStream.atEnd:
-  #     let rightLine = secondStream.readLine
-  #     decho rightLine
-  #     let rightGot = parseByCharacter(rightLine, args.secondCmd[1])
-  #     if leftGot == rightGot:
-  #       echo leftLine, ":", rightLine
-  #   secondStream.close
-  #   secondStream = args.secondFile.newFileStream(fmRead)
+  while not firstStream.atEnd:
+    let leftLine = firstStream.readLine
+    decho leftLine
+    let leftGot =
+      case args.firstAction.kind
+      of akCut:
+        parseByCharacter(leftLine, args.firstAction.chars)
+      of akGrep:
+        ""
+    decho leftGot
+
+    var secondStream = args.secondFile.newFileStream(fmRead)
+    while not secondStream.atEnd:
+      let rightLine = secondStream.readLine
+      decho rightLine
+      let rightGot =
+        case args.secondAction.kind
+        of akCut:
+          parseByCharacter(rightLine, args.secondAction.chars)
+        of akGrep:
+          ""
+      if leftGot == rightGot:
+        echo leftLine, ":", rightLine
+    secondStream.close
+    secondStream = args.secondFile.newFileStream(fmRead)
 
 when isMainModule and not defined modeTest:
   import cligen
