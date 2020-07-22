@@ -2,42 +2,66 @@ import unittest
 
 include joyn
 
-suite "proc splitArgs":
+template checkAction(k, want, got) =
+  case k
+  of akCut:
+    check want.firstAction.chars == got.firstAction.chars
+    check want.firstAction.fields == got.firstAction.fields
+    check want.firstAction.delim == got.firstAction.delim
+  of akGrep:
+    check want.firstAction.pattern == got.firstAction.pattern
+    check want.firstAction.group == got.firstAction.group
+
+suite "proc parseArgs":
   test "normal: first argument is the delimiter of args":
-    check splitArgs(@["/", "echo", "a", "/", "echo", "b", "/", "c.txt", "d.txt"]) ==
-      Args(
-        firstCmd: @["echo", "a"],
-        firstFile: "c.txt",
-        secondCmd: @["echo", "b"],
-        secondFile: "d.txt",
-        )
+    let want = Args(
+      firstAction: ActionParam(
+        kind: akCut,
+        chars: "1-15",
+        ),
+      firstFile: "c.txt",
+      secondAction: ActionParam(
+        kind: akCut,
+        chars: "1,2,3",
+        ),
+      secondFile: "d.txt",
+    )
+    let got = parseArgs(@["/", "c", "-c", "1-15", "/", "cut", "--characters", "1,2,3", "/", "c.txt", "d.txt"])
+    checkAction(akCut, want, got)
   test "normal: first argument is any character":
-    check splitArgs(@[":", "echo", "a", ":", "echo", "b", ":", "c.txt", "d.txt"]) ==
-      Args(
-        firstCmd: @["echo", "a"],
-        firstFile: "c.txt",
-        secondCmd: @["echo", "b"],
-        secondFile: "d.txt",
-        )
+    let want = Args(
+      firstAction: ActionParam(
+        kind: akCut,
+        chars: "1-15",
+        ),
+      firstFile: "c.txt",
+      secondAction: ActionParam(
+        kind: akCut,
+        chars: "1,2,3",
+        ),
+      secondFile: "d.txt",
+    )
+    let got = parseArgs(@[":", "c", "-c", "1-15", ":", "cut", "--characters", "1,2,3", ":", "c.txt", "d.txt"])
+    checkAction(akCut, want, got)
   test "abnormal: the last part must have 2 files":
     expect(InvalidArgsError):
-      discard splitArgs(@["/", "echo", "a", "/", "echo", "b", "/"])
+      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/"])
     expect(InvalidArgsError):
-      discard splitArgs(@["/", "echo", "a", "/", "echo", "b", "/", "c.txt"])
+      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/", "c.txt"])
     expect(InvalidArgsError):
-      discard splitArgs(@["/", "echo", "a", "/", "echo", "b", "/", "c.txt", "d.txt", "f.txt"])
+      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/", "c.txt", "d.txt", "f.txt"])
   test "abnormal: args must have 3 parts":
     expect(InvalidArgsError):
-      discard splitArgs(@["/", "echo", "a", "/", "echo", "b"])
+      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3"])
     expect(InvalidArgsError):
-      discard splitArgs(@["echo", "a", "echo", "b"])
+      discard parseArgs(@["c", "-c", "1-15"])
   test "abnormal: need args":
     expect(InvalidArgsError):
-      discard splitArgs(@[])
+      discard parseArgs(@[])
     expect(InvalidArgsError):
-      discard splitArgs(@["/"])
+      discard parseArgs(@["/"])
     expect(InvalidArgsError):
-      discard splitArgs(@["/", "/"])
+      discard parseArgs(@["/", "/"])
 
 suite "proc parseByCharacter":
   setup:

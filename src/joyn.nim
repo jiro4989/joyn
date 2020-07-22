@@ -1,17 +1,28 @@
 import strutils, sequtils, streams, tables, unicode
 from algorithm import sorted
 
-import regex
+import regex, argparse
 
 const
   version = "v0.1.0"
   slideWindowWidth = 1000
 
 type
+  ActionKind = enum
+    akCut, akGrep
+  ActionParam = object
+    case kind*: ActionKind
+    of akCut:
+      chars*: string
+      fields*: string
+      delim*: string
+    of akGrep:
+      pattern*: string
+      group*: string
   Args = object
-    firstCmd: seq[string]
+    firstAction: ActionParam
     firstFile: string
-    secondCmd: seq[string]
+    secondAction: ActionParam
     secondFile: string
   InvalidArgsError = object of CatchableError
   InvalidCharacterParamError = object of CatchableError
@@ -104,33 +115,52 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
 
   result = fields.join(delim)
 
-proc getArgsAndDelete(args: var seq[string], delim: string): seq[string] =
+proc getArgsAndDelete(args: var seq[string], delim: string): ActionParam =
   var m = args.high
+  var parts: seq[string]
   for i in 0..m:
     let arg = args[0]
     args.delete(0, 0)
 
     if arg == delim:
       break
-    result.add(arg)
+    parts.add(arg)
 
-proc splitArgs(args: seq[string]): Args =
-  if args.len < 1:
+  case parts[0]
+  of "cut", "c":
+    var p = newParser("cut"):
+      option("-c", "--characters", default = "")
+      option("-f", "--fields", default = "")
+      option("-d", "--delimiter", default = "")
+    let opts = p.parse(parts[1..^1])
+    result = ActionParam(kind: akCut, chars: opts.characters, fields: opts.fields, delim: opts.delimiter)
+  of "grep", "g":
+    var p = newParser("regexp"):
+      option("-g", "--group", default = "")
+      arg("pattern")
+    let opts = p.parse(parts[1..^1])
+    result = ActionParam(kind: akGrep, group: opts.group, pattern: opts.pattern)
+  else:
+    raise newException(InvalidArgsError, "error TODO")
+
+proc parseArgs(args: seq[string]): Args =
+  if args.len < 7:
     raise newException(InvalidArgsError, "need args")
   var args = args
   let delim = args[0]
   args.delete(0, 0)
 
-  result.firstCmd = getArgsAndDelete(args, delim)
-  result.secondCmd = getArgsAndDelete(args, delim)
+  result.firstAction = getArgsAndDelete(args, delim)
+  result.secondAction = getArgsAndDelete(args, delim)
 
   if args.len != 2:
     raise newException(InvalidArgsError, "need 2 files in last parts")
+
   result.firstFile = args[0]
   result.secondFile = args[1]
 
 proc joyn(rawargs: seq[string]): int =
-  let args = rawargs.splitArgs()
+  let args = rawargs.parseArgs()
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
@@ -138,21 +168,21 @@ proc joyn(rawargs: seq[string]): int =
   defer:
     firstStream.close
 
-  while not firstStream.atEnd:
-    let leftLine = firstStream.readLine
-    decho leftLine
-    let leftGot = parseByCharacter(leftLine, args.firstCmd[1])
-    decho leftGot
-
-    var secondStream = args.secondFile.newFileStream(fmRead)
-    while not secondStream.atEnd:
-      let rightLine = secondStream.readLine
-      decho rightLine
-      let rightGot = parseByCharacter(rightLine, args.secondCmd[1])
-      if leftGot == rightGot:
-        echo leftLine, ":", rightLine
-    secondStream.close
-    secondStream = args.secondFile.newFileStream(fmRead)
+  # while not firstStream.atEnd:
+  #   let leftLine = firstStream.readLine
+  #   decho leftLine
+  #   let leftGot = parseByCharacter(leftLine, args.firstCmd[1])
+  #   decho leftGot
+  # 
+  #   var secondStream = args.secondFile.newFileStream(fmRead)
+  #   while not secondStream.atEnd:
+  #     let rightLine = secondStream.readLine
+  #     decho rightLine
+  #     let rightGot = parseByCharacter(rightLine, args.secondCmd[1])
+  #     if leftGot == rightGot:
+  #       echo leftLine, ":", rightLine
+  #   secondStream.close
+  #   secondStream = args.secondFile.newFileStream(fmRead)
 
 when isMainModule and not defined modeTest:
   import cligen
