@@ -36,4 +36,4 @@ task archive, "Create archived assets":
 
 task case1, "Run case 1":
   exec "nimble build"
-  exec &"./bin/joyn -- / -c 44-50 / -c 1-7 / {testDataDir}/case1_access.log {testDataDir}/case1_userids.txt"
+  exec &"./bin/joyn -- / c -c 44-50 / c -c 1-7 / {testDataDir}/case1_access.log {testDataDir}/case1_userids.txt"
