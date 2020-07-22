@@ -33,6 +33,7 @@ template decho(x) =
     debugEcho x
 
 proc parseByCharacter(s, param: string): string =
+  decho "chars = " & param
   template raiseErr = raise newException(InvalidCharacterParamError, "need parameter")
 
   if param.len < 1:
@@ -78,7 +79,7 @@ proc parseByCharacter(s, param: string): string =
 proc parseByField(s, delim, field: string): string =
   let cols = s.split(delim)
   try:
-    let index = field.parseInt
+    let index = field.parseInt - 1
     if cols.len <= index:
       return
     result = cols[index]
@@ -186,6 +187,7 @@ proc main(rawargs: seq[string]): int =
 
   let opts = p.parse(pref)
   let args = rawargs[pos+1 .. ^1].parseArgs()
+  echo args
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
@@ -193,13 +195,13 @@ proc main(rawargs: seq[string]): int =
   defer:
     firstStream.close
 
-  proc action(line: string, act: ActionParam): string =
+  template action(line, act): string =
     case act.kind
     of akCut:
       if 0 < act.chars.len:
         parseByCharacter(line, act.chars)
       elif 0 < act.fields.len:
-        parseByField(line, act.delim, act.chars)
+        parseByField(line, act.delim, act.fields)
       else:
         raise newException(InvalidArgsError, "error TODO")
     of akGrep:
@@ -208,20 +210,14 @@ proc main(rawargs: seq[string]): int =
   while not firstStream.atEnd:
     let leftLine = firstStream.readLine
     decho leftLine
-    let leftGot =
-      block:
-        let act = args.firstAction
-        action(leftLine, act)
+    let leftGot = action(leftLine, args.firstAction)
     decho leftGot
 
     var secondStream = args.secondFile.newFileStream(fmRead)
     while not secondStream.atEnd:
       let rightLine = secondStream.readLine
       decho rightLine
-      let rightGot =
-        block:
-          let act = args.secondAction
-          action(rightLine, act)
+      let rightGot = action(rightLine, args.secondAction)
       if leftGot == rightGot:
         echo "MATCHED: ", leftLine, ":", rightLine
     secondStream.close
