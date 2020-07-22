@@ -165,12 +165,19 @@ proc parseArgs(args: seq[string]): Args =
   result.secondFile = args[1]
 
 proc main(rawargs: seq[string]): int =
+  var pos: int
+  var pref: seq[string]
+  for i, arg in rawargs:
+    if arg == "--":
+      pos = i
+      break
+    pref.add(arg)
+
   var p = newParser("joyn"):
     option("-o", "--format", default = "")
-    arg("args", nargs = -1)
 
-  let opts = p.parse(rawargs)
-  let args = opts.args.parseArgs()
+  let opts = p.parse(pref)
+  let args = rawargs[pos+1 .. ^1].parseArgs()
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
