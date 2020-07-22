@@ -76,7 +76,15 @@ proc parseByCharacter(s, param: string): string =
     result.add(runes[k])
 
 proc parseByField(s, delim, field: string): string =
-  discard
+  let cols = s.split(delim)
+  try:
+    let index = field.parseInt
+    if cols.len <= index:
+      return
+    result = cols[index]
+  except:
+    # TODO:
+    discard
 
 proc parseByRegexp(s, regexp: string): string =
   let pattern = re(regexp)
@@ -136,7 +144,7 @@ proc getArgsAndDelete(args: var seq[string], delim: string): ActionParam =
     var p = newParser("cut"):
       option("-c", "--characters", default = "")
       option("-f", "--fields", default = "")
-      option("-d", "--delimiter", default = "")
+      option("-d", "--delimiter", default = " ")
     let opts = p.parse(parts[1..^1])
     result = ActionParam(kind: akCut, chars: opts.characters, fields: opts.fields, delim: opts.delimiter)
   of "grep", "g":
@@ -185,15 +193,25 @@ proc main(rawargs: seq[string]): int =
   defer:
     firstStream.close
 
+  proc action(line: string, act: ActionParam): string =
+    case act.kind
+    of akCut:
+      if 0 < act.chars.len:
+        parseByCharacter(line, act.chars)
+      elif 0 < act.fields.len:
+        parseByField(line, act.delim, act.chars)
+      else:
+        raise newException(InvalidArgsError, "error TODO")
+    of akGrep:
+      parseByRegexp(line, act.pattern)
+
   while not firstStream.atEnd:
     let leftLine = firstStream.readLine
     decho leftLine
     let leftGot =
-      case args.firstAction.kind
-      of akCut:
-        parseByCharacter(leftLine, args.firstAction.chars)
-      of akGrep:
-        parseByRegexp(leftLine, args.firstAction.pattern)
+      block:
+        let act = args.firstAction
+        action(leftLine, act)
     decho leftGot
 
     var secondStream = args.secondFile.newFileStream(fmRead)
@@ -201,13 +219,11 @@ proc main(rawargs: seq[string]): int =
       let rightLine = secondStream.readLine
       decho rightLine
       let rightGot =
-        case args.secondAction.kind
-        of akCut:
-          parseByCharacter(rightLine, args.secondAction.chars)
-        of akGrep:
-          parseByRegexp(rightLine, args.secondAction.pattern)
+        block:
+          let act = args.secondAction
+          action(rightLine, act)
       if leftGot == rightGot:
-        echo leftLine, ":", rightLine
+        echo "MATCHED: ", leftLine, ":", rightLine
     secondStream.close
     secondStream = args.secondFile.newFileStream(fmRead)
 
