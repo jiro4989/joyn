@@ -33,7 +33,6 @@ template decho(x) =
     debugEcho x
 
 proc parseByCharacter(s, param: string): string =
-  decho "chars = " & param
   template raiseErr = raise newException(InvalidCharacterParamError, "need parameter")
 
   if param.len < 1:
