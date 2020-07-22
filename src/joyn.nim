@@ -32,6 +32,12 @@ template decho(x) =
   when not defined release:
     debugEcho x
 
+proc toIndexTable(s: string): Table[string, string] =
+  var i: int
+  for f in s.split(" "):
+    inc i
+    result[$i] = f
+
 proc parseByCharacter(s, param: string): string =
   template raiseErr = raise newException(InvalidCharacterParamError, "need parameter")
 
@@ -186,7 +192,6 @@ proc main(rawargs: seq[string]): int =
 
   let opts = p.parse(pref)
   let args = rawargs[pos+1 .. ^1].parseArgs()
-  echo args
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
@@ -208,19 +213,18 @@ proc main(rawargs: seq[string]): int =
 
   while not firstStream.atEnd:
     let leftLine = firstStream.readLine
-    decho leftLine
     let leftGot = action(leftLine, args.firstAction)
-    decho leftGot
 
     var secondStream = args.secondFile.newFileStream(fmRead)
     while not secondStream.atEnd:
       let rightLine = secondStream.readLine
-      decho rightLine
       let rightGot = action(rightLine, args.secondAction)
       if leftGot == rightGot:
         let line =
           if 0 < opts.format.len:
-            ""
+            let li = leftLine.toIndexTable
+            let ri = rightLine.toIndexTable
+            formatGroup(opts.format, " ", li, ri)
           else:
             leftLine & " " & rightLine
         echo line
