@@ -13,8 +13,8 @@ template checkAction(k, want, got) =
     check want.firstAction.group == got.firstAction.group
 
 suite "proc parseArgs":
-  test "normal: first argument is the delimiter of args":
-    let want = Args(
+  setup:
+    let want1 = Args(
       firstAction: ActionParam(
         kind: akCut,
         chars: "1-15",
@@ -28,23 +28,12 @@ suite "proc parseArgs":
         ),
       secondFile: "d.txt",
     )
+  test "normal: first argument is the delimiter of args":
+    let want = want1
     let got = parseArgs(@["/", "c", "-c", "1-15", "/", "cut", "--characters", "1,2,3", "/", "c.txt", "d.txt"])
     checkAction(akCut, want, got)
   test "normal: first argument is any character":
-    let want = Args(
-      firstAction: ActionParam(
-        kind: akCut,
-        chars: "1-15",
-        delim: " ",
-        ),
-      firstFile: "c.txt",
-      secondAction: ActionParam(
-        kind: akCut,
-        chars: "1,2,3",
-        delim: " ",
-        ),
-      secondFile: "d.txt",
-    )
+    let want = want1
     let got = parseArgs(@[":", "c", "-c", "1-15", ":", "cut", "--characters", "1,2,3", ":", "c.txt", "d.txt"])
     checkAction(akCut, want, got)
   test "abnormal: the last part must have 2 files":
