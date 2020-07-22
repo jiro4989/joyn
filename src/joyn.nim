@@ -115,9 +115,11 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
     let key = buf[2..^1]
     let val =
       if buf.startsWith("1."):
-        first[key]
+        if first.hasKey(key): first[key]
+        else: ""
       elif buf.startsWith("2."):
-        second[key]
+        if second.hasKey(key): second[key]
+        else: ""
       else:
         raise newException(InvalidOutputFormatError, "error TODO")
     fields.add(val)
@@ -222,8 +224,16 @@ proc main(rawargs: seq[string]): int =
       if leftGot == rightGot:
         let line =
           if 0 < opts.format.len:
-            let li = leftLine.toIndexTable
-            let ri = rightLine.toIndexTable
+            var li = leftLine.toIndexTable
+            if args.firstAction.kind == akGrep and args.firstAction.group != "":
+              for k, v in leftLine.capturingGroup(args.firstAction.group):
+                li[k] = v
+
+            var ri = rightLine.toIndexTable
+            if args.secondAction.kind == akGrep and args.secondAction.group != "":
+              for k, v in rightLine.capturingGroup(args.secondAction.group):
+                ri[k] = v
+
             formatGroup(opts.format, " ", li, ri)
           else:
             leftLine & " " & rightLine
