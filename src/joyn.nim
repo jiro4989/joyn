@@ -159,8 +159,13 @@ proc parseArgs(args: seq[string]): Args =
   result.firstFile = args[0]
   result.secondFile = args[1]
 
-proc joyn(rawargs: seq[string]): int =
-  let args = rawargs.parseArgs()
+proc main(rawargs: seq[string]): int =
+  var p = newParser("joyn"):
+    option("-o", "--format", default = "")
+    arg("args", nargs = -1)
+
+  let opts = p.parse(rawargs)
+  let args = opts.args.parseArgs()
 
   var
     firstStream = args.firstFile.newFileStream(fmRead)
@@ -195,6 +200,4 @@ proc joyn(rawargs: seq[string]): int =
     secondStream = args.secondFile.newFileStream(fmRead)
 
 when isMainModule and not defined modeTest:
-  import cligen
-  clCfg.version = version
-  dispatch(joyn)
+  quit main(commandLineParams())
