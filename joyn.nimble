@@ -48,4 +48,4 @@ task case3, "Run case 3":
 
 task case4, "Run case 4":
   exec "nimble build"
-  exec &"./bin/joyn -o '2.1,1.userName' -- / g '/users/(?P<userName>[^/]+)/' / c -f 2 / {testDataDir}/case1_access.log {testDataDir}/case1_userids.txt"
+  exec &"./bin/joyn -o '2.1,1.userName' -- / g '/users/([^/]+)/' -g '/users/(?P<userName>[^/]+)/' / c -f 2 / {testDataDir}/case1_access.log {testDataDir}/case1_userids.txt"
