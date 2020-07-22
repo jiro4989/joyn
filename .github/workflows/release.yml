@@ -6,9 +6,9 @@ on:
       - 'v*.*.*'
 
 env:
-  APP_NAME: 'APPNAME'
+  APP_NAME: 'joyn'
   NIM_VERSION: 'stable'
-  MAINTAINER: 'MAINTAINER'
+  MAINTAINER: 'jiro4989'
 
 jobs:
   build-artifact:
