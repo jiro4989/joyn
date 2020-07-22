@@ -1,6 +1,8 @@
 import strutils, sequtils, streams, tables, unicode
 from algorithm import sorted
 
+import regex
+
 const
   version = "v0.1.0"
   slideWindowWidth = 1000
@@ -13,6 +15,7 @@ type
     secondFile: string
   InvalidArgsError = object of CatchableError
   InvalidCharacterParamError = object of CatchableError
+  InvalidOutputFormatError = object of CatchableError
 
 template decho(x) =
   when not defined release:
@@ -66,6 +69,40 @@ proc parseByField(s, delim, field: string): string =
 
 proc parseByRegexp(s, param: string): string =
   discard
+
+proc capturingGroup(s, regexp: string): Table[string, string] =
+  let pattern =  re(regexp)
+  var match: RegexMatch
+  if s.find(pattern, match):
+    for name in match.groupNames:
+      result[name] = match.groupFirstCapture(name, s)
+
+proc formatGroup(f, delim: string, first: Table[string, string], second: Table[string, string]): string =
+  var buf: string
+  var fields: seq[string]
+
+  template addField =
+    let key = buf[2..^1]
+    let val =
+      if buf.startsWith("1."):
+        first[key]
+      elif buf.startsWith("2."):
+        second[key]
+      else:
+        raise newException(InvalidOutputFormatError, "error TODO")
+    fields.add(val)
+    buf = ""
+
+  for i, ch in f:
+    if ch == ',':
+      addField()
+      continue
+    buf.add(ch)
+
+  if 0 < buf.len:
+    addField()
+
+  result = fields.join(delim)
 
 proc getArgsAndDelete(args: var seq[string], delim: string): seq[string] =
   var m = args.high
