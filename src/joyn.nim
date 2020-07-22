@@ -78,8 +78,13 @@ proc parseByCharacter(s, param: string): string =
 proc parseByField(s, delim, field: string): string =
   discard
 
-proc parseByRegexp(s, param: string): string =
-  discard
+proc parseByRegexp(s, regexp: string): string =
+  let pattern = re(regexp)
+  var match: RegexMatch
+  if s.find(pattern, match):
+    if 0 < match.groupsCount:
+      for bounds in match.group(0):
+        return s[bounds]
 
 proc capturingGroup(s, regexp: string): Table[string, string] =
   let pattern =  re(regexp)
@@ -181,7 +186,7 @@ proc main(rawargs: seq[string]): int =
       of akCut:
         parseByCharacter(leftLine, args.firstAction.chars)
       of akGrep:
-        ""
+        parseByRegexp(leftLine, args.firstAction.pattern)
     decho leftGot
 
     var secondStream = args.secondFile.newFileStream(fmRead)
@@ -193,7 +198,7 @@ proc main(rawargs: seq[string]): int =
         of akCut:
           parseByCharacter(rightLine, args.secondAction.chars)
         of akGrep:
-          ""
+          parseByRegexp(rightLine, args.secondAction.pattern)
       if leftGot == rightGot:
         echo leftLine, ":", rightLine
     secondStream.close
