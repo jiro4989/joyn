@@ -218,7 +218,12 @@ proc main(rawargs: seq[string]): int =
       decho rightLine
       let rightGot = action(rightLine, args.secondAction)
       if leftGot == rightGot:
-        echo "MATCHED: ", leftLine, ":", rightLine
+        let line =
+          if 0 < opts.format.len:
+            ""
+          else:
+            leftLine & " " & rightLine
+        echo line
     secondStream.close
     secondStream = args.secondFile.newFileStream(fmRead)
 
