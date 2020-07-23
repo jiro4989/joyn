@@ -137,7 +137,9 @@ Joining log files and CSV by regular expression
 Installation
 ============
 
-TODO
+.. code-block:: shell
+
+   nimble install https://github.com/jiro4989/joyn
 
 LICENSE
 =======
