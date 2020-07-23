@@ -1,6 +1,11 @@
 id,name,hobby_id
 1,taro,1
-2,ichiro,3
-3,hanako,4
-4,john,5
-5,bob,2
+2,taro,4
+3,ichiro,3
+4,ichiro,1
+5,hanako,2
+6,hanako,3
+7,hanako,4
+8,john,1
+9,john,5
+10,bob,2
