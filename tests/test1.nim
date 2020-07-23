@@ -1,4 +1,4 @@
-import unittest
+import unittest, os
 
 include joyn
 
@@ -32,4 +32,25 @@ suite "proc formatGroup":
       ",",
       {"id": "1234", "name": "john"}.toTable,
       {"id": "1234", "email": "john@example.com"}.toTable)
+    check want == got
+
+suite "iterator doMain":
+  setup:
+    const
+      tdir = "tests"/"testdata"
+      ff = tdir/"do_main1.tmp"
+      sf = tdir/"do_main2.tmp"
+  teardown:
+    removeFile(ff)
+    removeFile(sf)
+  test "normal":
+    let want = @["1 hello 1 world"]
+    writeFile(ff, "1 hello")
+    writeFile(sf, "1 world")
+    let fact = ActionParam(kind: akCut, delim: " ", chars: "1", field: -1)
+    let sact = ActionParam(kind: akCut, delim: " ", chars: "1", field: -1)
+    let args = Args(firstAction: fact, secondAction: sact, firstFile: ff, secondFile: sf)
+    var got: seq[string]
+    for line in doMain(args):
+      got.add(line)
     check want == got

@@ -5,7 +5,7 @@ import regex, argparse
 type
   ActionKind* = enum
     akCut, akGrep
-  ActionParam = object
+  ActionParam* = object
     delim*: string
     case kind*: ActionKind
     of akCut:
