@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.1"
+version       = "0.2.0"
 author        = "jiro4989"
 description   = "joyn joins lines of two files with a common characters, field or regular expression."
 license       = "MIT"
