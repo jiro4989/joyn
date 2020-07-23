@@ -58,3 +58,7 @@ task example6, "Run example 6":
   exec "nimble build"
   exec &"./bin/joyn -- / g '/users/([^/]+)/' / c -f 2 / {testDataDir}/access.log {testDataDir}/userids.txt"
 
+task example7, "Output to file":
+  exec "nimble build"
+  exec &"./bin/joyn --outfile tmp.txt -- / g '/users/([^/]+)/' / c -f 2 / {testDataDir}/access.log {testDataDir}/userids.txt"
+
