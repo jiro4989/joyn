@@ -85,11 +85,13 @@ iterator doMain(args: Args): string =
         let line =
           if 0 < args.format.len:
             var li = leftLine.toIndexTable(args.firstAction.delim)
+            li["0"] = leftLine
             if args.firstAction.kind == akGrep:
               for k, v in leftLine.capturingGroup(args.firstAction.group):
                 li[k] = v
 
             var ri = rightLine.toIndexTable(args.secondAction.delim)
+            ri["0"] = rightLine
             if args.secondAction.kind == akGrep:
               for k, v in rightLine.capturingGroup(args.secondAction.group):
                 ri[k] = v

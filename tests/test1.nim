@@ -76,3 +76,14 @@ suite "iterator doMain":
     for line in doMain(args):
       got.add(line)
     check want == got
+  test "normal: format output":
+    let want = @["1 hello 1 world hello world"]
+    writeFile(ff, "1 hello")
+    writeFile(sf, "1 world")
+    let fact = ActionParam(kind: akCut, delim: " ", chars: "1", field: -1)
+    let sact = ActionParam(kind: akCut, delim: " ", chars: "1", field: -1)
+    let args = Args(format: "1.0,2.0,1.2,2.2", firstAction: fact, secondAction: sact, firstFile: ff, secondFile: sf)
+    var got: seq[string]
+    for line in doMain(args):
+      got.add(line)
+    check want == got
