@@ -104,8 +104,17 @@ iterator doMain(args: Args): string =
 
 proc main(args: seq[string]): int =
   let args = parseArgs(args)
+
+  if args.outfile.len == 0:
+    for line in doMain(args):
+      echo line
+    return
+
+  var strm = newFileStream(args.outfile, fmWrite)
+  defer:
+    strm.close
   for line in doMain(args):
-    echo line
+    strm.writeLine(line)
 
 when isMainModule and not defined modeTest:
   quit main(commandLineParams())
