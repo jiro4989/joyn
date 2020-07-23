@@ -114,7 +114,10 @@ Joining log files and CSV by regular expression
 
 .. code-block:: shell
 
-  $ joyn -o '1.1,1.2,1.4,1.5,2.2,1.id' -- / g '\s/([^/]+)/[^s]+\s' -d ' ' -g '\s/(?P<id>[^/]+)/[^s]+\s' / c -d ',' -f 1 / tests/testdata/app.log tests/testdata/user2.csv
+  $ joyn -o '1.1,1.2,1.4,1.5,2.2,1.id' -- \
+    / g '\s/([^/]+)/[^s]+\s' -d ' ' -g '\s/(?P<id>[^/]+)/[^s]+\s' \
+    / c -d ',' -f 1 \
+    / tests/testdata/app.log tests/testdata/user2.csv
   2020-01-02 02:33:20 GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/login john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
   2020-01-02 02:33:20 GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
   2020-01-02 02:33:20 POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
