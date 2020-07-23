@@ -60,7 +60,6 @@ iterator doMain(args: Args): string =
 
   defer:
     firstStream.close
-    secondStream.close
 
   template action(line, act): string =
     case act.kind
@@ -78,7 +77,7 @@ iterator doMain(args: Args): string =
     let leftLine = firstStream.readLine
     let leftGot = action(leftLine, args.firstAction)
 
-    secondStream = args.secondFile.newFileStream(fmRead)
+    var secondStream = args.secondFile.newFileStream(fmRead)
     while not secondStream.atEnd:
       let rightLine = secondStream.readLine
       let rightGot = action(rightLine, args.secondAction)
@@ -100,7 +99,6 @@ iterator doMain(args: Args): string =
             leftLine & " " & rightLine
         yield line
     secondStream.close
-    secondStream = args.secondFile.newFileStream(fmRead)
 
 proc main(args: seq[string]): int =
   let args = parseArgs(args)
