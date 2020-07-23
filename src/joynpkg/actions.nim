@@ -54,7 +54,7 @@ proc cutByCharacter*(s, param: string): string =
 proc cutByField*(s, delim: string, field: int): string =
   let cols = s.split(delim)
   let index = field - 1
-  if cols.len <= index:
+  if index < 0 or cols.len <= index:
     return
   result = cols[index]
 
