@@ -65,3 +65,14 @@ suite "iterator doMain":
     for line in doMain(args):
       got.add(line)
     check want == got
+  test "normal: grep and grep":
+    let want = @["abcd HELLO WORLD,abcd"]
+    writeFile(ff, "AA 1234\nabcd HELLO")
+    writeFile(sf, "BB,5678\nWORLD,abcd")
+    let fact = ActionParam(kind: akGrep, pattern: re"^([^\s]+)\s")
+    let sact = ActionParam(kind: akGrep, pattern: re",(.*)")
+    let args = Args(firstAction: fact, secondAction: sact, firstFile: ff, secondFile: sf)
+    var got: seq[string]
+    for line in doMain(args):
+      got.add(line)
+    check want == got
