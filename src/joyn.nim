@@ -11,11 +11,11 @@ type
   ActionKind = enum
     akCut, akGrep
   ActionParam = object
+    delim*: string
     case kind*: ActionKind
     of akCut:
       chars*: string
       fields*: string
-      delim*: string
     of akGrep:
       pattern*: string
       group*: string
@@ -32,9 +32,9 @@ template decho(x) =
   when not defined release:
     debugEcho x
 
-proc toIndexTable(s: string): Table[string, string] =
+proc toIndexTable(s, delim: string): Table[string, string] =
   var i: int
-  for f in s.split(" "):
+  for f in s.split(delim):
     inc i
     result[$i] = f
 
@@ -158,9 +158,10 @@ proc getArgsAndDelete(args: var seq[string], delim: string): ActionParam =
   of "grep", "g":
     var p = newParser("regexp"):
       option("-g", "--group", default = "")
+      option("-d", "--delimiter", default = " ")
       arg("pattern")
     let opts = p.parse(parts[1..^1])
-    result = ActionParam(kind: akGrep, group: opts.group, pattern: opts.pattern)
+    result = ActionParam(kind: akGrep, group: opts.group, pattern: opts.pattern, delim: opts.delimiter)
   else:
     raise newException(InvalidArgsError, "error TODO")
 
@@ -224,12 +225,12 @@ proc main(rawargs: seq[string]): int =
       if leftGot == rightGot:
         let line =
           if 0 < opts.format.len:
-            var li = leftLine.toIndexTable
+            var li = leftLine.toIndexTable(args.firstAction.delim)
             if args.firstAction.kind == akGrep and args.firstAction.group != "":
               for k, v in leftLine.capturingGroup(args.firstAction.group):
                 li[k] = v
 
-            var ri = rightLine.toIndexTable
+            var ri = rightLine.toIndexTable(args.secondAction.delim)
             if args.secondAction.kind == akGrep and args.secondAction.group != "":
               for k, v in rightLine.capturingGroup(args.secondAction.group):
                 ri[k] = v

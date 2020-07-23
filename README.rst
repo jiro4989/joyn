@@ -35,7 +35,7 @@ Joining CSV fields
   4 cokking
   5 sleep
 
-  $ joyn -- / -d , -f 3 / -d " " -f 1 / tests/testdata/user.csv tests/testdata/hobby.txt
+  $ joyn -- / c -d , -f 3 / c -d " " -f 1 / tests/testdata/user.csv tests/testdata/hobby.txt
   1,taro,1 1 soccer
   2,taro,4 4 cokking
   3,ichiro,3 3 running
@@ -46,6 +46,22 @@ Joining CSV fields
   8,john,1 1 soccer
   9,john,5 5 sleep
   10,bob,2 2 baseball
+
+`-o` controls output fields.
+
+.. code-block:: shell
+
+  $ joyn -o '1.1,1.2,2.2' -- / c -d , -f 3 / c -d " " -f 1 / tests/testdata/user.csv tests/testdata/hobby.txt
+  1 taro soccer
+  2 taro cokking
+  3 ichiro running
+  4 ichiro soccer
+  5 hanako baseball
+  6 hanako running
+  7 hanako cokking
+  8 john soccer
+  9 john sleep
+  10 bob baseball
 
 Joining log files and CSV by regular expression
 -----------------------------------------------
@@ -93,6 +109,27 @@ Joining log files and CSV by regular expression
   2020-01-02 05:49:46 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
   2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
   2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
+
+`-o` controls output fields by named capturing group.
+
+.. code-block:: shell
+
+  $ joyn -o '1.id,2.2' -- / g '\s/([^/]+)/[^s]+\s' -g '\s/(?P<id>[^/]+)/[^s]+\s' / c -d ',' -f 1 / tests/testdata/app.log tests/testdata/user2.csv
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
 
 Installation
 ============
