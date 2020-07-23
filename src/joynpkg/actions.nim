@@ -53,14 +53,10 @@ proc cutByCharacter*(s, param: string): string =
 
 proc cutByField*(s, delim: string, field: int): string =
   let cols = s.split(delim)
-  try:
-    let index = field - 1
-    if cols.len <= index:
-      return
-    result = cols[index]
-  except:
-    # TODO:
-    discard
+  let index = field - 1
+  if cols.len <= index:
+    return
+  result = cols[index]
 
 proc searchByRegexp*(s, regexp: string): string =
   let pattern = re(regexp)

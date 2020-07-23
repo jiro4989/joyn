@@ -88,3 +88,7 @@ suite "proc cutByField":
     let want = "日本"
     let got = cutByField(s2, ",", 3)
     check want == got
+  test "normal: no error if field doesn't exist":
+    let want = ""
+    let got = cutByField(s2, ",", 99)
+    check want == got
