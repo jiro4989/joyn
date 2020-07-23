@@ -56,9 +56,11 @@ proc capturingGroup(s: string, pattern: Regex): Table[string, string] =
 
 iterator doMain(args: Args): string =
   var firstStream = args.firstFile.newFileStream(fmRead)
+  var secondStream: Stream
 
   defer:
     firstStream.close
+    secondStream.close
 
   template action(line, act): string =
     case act.kind
@@ -76,7 +78,7 @@ iterator doMain(args: Args): string =
     let leftLine = firstStream.readLine
     let leftGot = action(leftLine, args.firstAction)
 
-    var secondStream = args.secondFile.newFileStream(fmRead)
+    secondStream = args.secondFile.newFileStream(fmRead)
     while not secondStream.atEnd:
       let rightLine = secondStream.readLine
       let rightGot = action(rightLine, args.secondAction)
