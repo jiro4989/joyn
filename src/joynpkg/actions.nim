@@ -8,7 +8,7 @@ type
   InvalidCharacterParamError* = object of CatchableError
   InvalidOutputFormatError* = object of CatchableError
 
-proc parseByCharacter*(s, param: string): string =
+proc cutByCharacter*(s, param: string): string =
   template raiseErr = raise newException(InvalidCharacterParamError, "need parameter")
 
   if param.len < 1:
@@ -51,7 +51,7 @@ proc parseByCharacter*(s, param: string): string =
   for k in toSeq(poses.keys).sorted:
     result.add(runes[k])
 
-proc parseByField*(s, delim, field: string): string =
+proc cutByField*(s, delim, field: string): string =
   let cols = s.split(delim)
   try:
     let index = field.parseInt - 1
@@ -62,7 +62,7 @@ proc parseByField*(s, delim, field: string): string =
     # TODO:
     discard
 
-proc parseByRegexp*(s, regexp: string): string =
+proc searchByRegexp*(s, regexp: string): string =
   let pattern = re(regexp)
   var match: RegexMatch
   if s.find(pattern, match):

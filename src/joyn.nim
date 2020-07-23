@@ -66,13 +66,13 @@ proc main(args: seq[string]): int =
     case act.kind
     of akCut:
       if 0 < act.chars.len:
-        parseByCharacter(line, act.chars)
+        cutByCharacter(line, act.chars)
       elif 0 < act.fields.len:
-        parseByField(line, act.delim, act.fields)
+        cutByField(line, act.delim, act.fields)
       else:
         raise newException(InvalidArgsError, "error TODO")
     of akGrep:
-      parseByRegexp(line, act.pattern)
+      searchByRegexp(line, act.pattern)
 
   while not firstStream.atEnd:
     let leftLine = firstStream.readLine
