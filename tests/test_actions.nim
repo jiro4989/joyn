@@ -96,3 +96,21 @@ suite "proc cutByField":
     let want = ""
     let got = cutByField(s2, ",", -99)
     check want == got
+
+suite "proc searchByRegexp":
+  setup:
+    const
+      s1 = "山田 たろう"
+      s2 = "1 apple りんご"
+  test "normal: group match":
+    let want = "たろう"
+    let got = searchByRegexp(s1, re"山田 (太郎|たろう)")
+    check want == got
+  test "normal: match parts":
+    let want = "apple"
+    let got = searchByRegexp(s2, re"\d+\s+(apple)\s+.*")
+    check want == got
+  test "abnormal: no match when no group":
+    let want = ""
+    let got = searchByRegexp(s2, re"apple")
+    check want == got
