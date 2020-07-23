@@ -54,8 +54,7 @@ proc capturingGroup(s: string, pattern: Regex): Table[string, string] =
     for name in match.groupNames:
       result[name] = match.groupFirstCapture(name, s)
 
-proc main(args: seq[string]): int =
-  let args = parseArgs(args)
+iterator doMain(args: Args): string =
   var firstStream = args.firstFile.newFileStream(fmRead)
 
   defer:
@@ -97,9 +96,14 @@ proc main(args: seq[string]): int =
             formatGroup(args.format, " ", li, ri)
           else:
             leftLine & " " & rightLine
-        echo line
+        yield line
     secondStream.close
     secondStream = args.secondFile.newFileStream(fmRead)
+
+proc main(args: seq[string]): int =
+  let args = parseArgs(args)
+  for line in doMain(args):
+    echo line
 
 when isMainModule and not defined modeTest:
   quit main(commandLineParams())
