@@ -43,12 +43,23 @@ suite "iterator doMain":
   teardown:
     removeFile(ff)
     removeFile(sf)
-  test "normal":
+  test "normal: cut char and cut char":
     let want = @["1 hello 1 world"]
     writeFile(ff, "1 hello")
     writeFile(sf, "1 world")
     let fact = ActionParam(kind: akCut, delim: " ", chars: "1", field: -1)
     let sact = ActionParam(kind: akCut, delim: " ", chars: "1", field: -1)
+    let args = Args(firstAction: fact, secondAction: sact, firstFile: ff, secondFile: sf)
+    var got: seq[string]
+    for line in doMain(args):
+      got.add(line)
+    check want == got
+  test "normal: cut field and cut field":
+    let want = @["abcd HELLO WORLD,abcd"]
+    writeFile(ff, "AA 1234\nabcd HELLO")
+    writeFile(sf, "BB,5678\nWORLD,abcd")
+    let fact = ActionParam(kind: akCut, delim: " ", field: 1)
+    let sact = ActionParam(kind: akCut, delim: ",", field: 2)
     let args = Args(firstAction: fact, secondAction: sact, firstFile: ff, secondFile: sf)
     var got: seq[string]
     for line in doMain(args):
