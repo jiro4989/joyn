@@ -1,30 +1,17 @@
-import strutils, sequtils, streams, tables, unicode
+import strutils, streams, tables, unicode
+from os import commandLineParams
+from sequtils import toSeq
 from algorithm import sorted
 
-import regex, argparse
+import regex
+
+import joynpkg/argparser
 
 const
   version = "v0.1.0"
   slideWindowWidth = 1000
 
 type
-  ActionKind = enum
-    akCut, akGrep
-  ActionParam = object
-    delim*: string
-    case kind*: ActionKind
-    of akCut:
-      chars*: string
-      fields*: string
-    of akGrep:
-      pattern*: string
-      group*: string
-  Args = object
-    firstAction: ActionParam
-    firstFile: string
-    secondAction: ActionParam
-    secondFile: string
-  InvalidArgsError = object of CatchableError
   InvalidCharacterParamError = object of CatchableError
   InvalidOutputFormatError = object of CatchableError
 
@@ -136,68 +123,9 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
 
   result = fields.join(delim)
 
-proc getArgsAndDelete(args: var seq[string], delim: string): ActionParam =
-  var m = args.high
-  var parts: seq[string]
-  for i in 0..m:
-    let arg = args[0]
-    args.delete(0, 0)
-
-    if arg == delim:
-      break
-    parts.add(arg)
-
-  case parts[0]
-  of "cut", "c":
-    var p = newParser("cut"):
-      option("-c", "--characters", default = "")
-      option("-f", "--fields", default = "")
-      option("-d", "--delimiter", default = " ")
-    let opts = p.parse(parts[1..^1])
-    result = ActionParam(kind: akCut, chars: opts.characters, fields: opts.fields, delim: opts.delimiter)
-  of "grep", "g":
-    var p = newParser("regexp"):
-      option("-g", "--group", default = "")
-      option("-d", "--delimiter", default = " ")
-      arg("pattern")
-    let opts = p.parse(parts[1..^1])
-    result = ActionParam(kind: akGrep, group: opts.group, pattern: opts.pattern, delim: opts.delimiter)
-  else:
-    raise newException(InvalidArgsError, "error TODO")
-
-proc parseArgs(args: seq[string]): Args =
-  if args.len < 7:
-    raise newException(InvalidArgsError, "need args")
-  var args = args
-  let delim = args[0]
-  args.delete(0, 0)
-
-  result.firstAction = getArgsAndDelete(args, delim)
-  result.secondAction = getArgsAndDelete(args, delim)
-
-  if args.len != 2:
-    raise newException(InvalidArgsError, "need 2 files in last parts")
-
-  result.firstFile = args[0]
-  result.secondFile = args[1]
-
-proc main(rawargs: seq[string]): int =
-  var pos: int
-  var pref: seq[string]
-  for i, arg in rawargs:
-    if arg == "--":
-      pos = i
-      break
-    pref.add(arg)
-
-  var p = newParser("joyn"):
-    option("-o", "--format", default = "")
-
-  let opts = p.parse(pref)
-  let args = rawargs[pos+1 .. ^1].parseArgs()
-
-  var
-    firstStream = args.firstFile.newFileStream(fmRead)
+proc main(args: seq[string]): int =
+  let args = parseArgs2(args)
+  var firstStream = args.firstFile.newFileStream(fmRead)
 
   defer:
     firstStream.close
@@ -224,7 +152,7 @@ proc main(rawargs: seq[string]): int =
       let rightGot = action(rightLine, args.secondAction)
       if leftGot == rightGot:
         let line =
-          if 0 < opts.format.len:
+          if 0 < args.format.len:
             var li = leftLine.toIndexTable(args.firstAction.delim)
             if args.firstAction.kind == akGrep and args.firstAction.group != "":
               for k, v in leftLine.capturingGroup(args.firstAction.group):
@@ -235,7 +163,7 @@ proc main(rawargs: seq[string]): int =
               for k, v in rightLine.capturingGroup(args.secondAction.group):
                 ri[k] = v
 
-            formatGroup(opts.format, " ", li, ri)
+            formatGroup(args.format, " ", li, ri)
           else:
             leftLine & " " & rightLine
         echo line
