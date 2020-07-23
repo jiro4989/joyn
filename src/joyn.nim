@@ -124,7 +124,7 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
   result = fields.join(delim)
 
 proc main(args: seq[string]): int =
-  let args = parseArgs2(args)
+  let args = parseArgs(args)
   var firstStream = args.firstFile.newFileStream(fmRead)
 
   defer:

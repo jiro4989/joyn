@@ -12,7 +12,7 @@ template checkAction(k, want, got) =
     check want.firstAction.pattern == got.firstAction.pattern
     check want.firstAction.group == got.firstAction.group
 
-suite "proc parseArgs":
+suite "proc parseActions":
   setup:
     let want1 = Args(
       firstAction: ActionParam(
@@ -30,29 +30,29 @@ suite "proc parseArgs":
     )
   test "normal: first argument is the delimiter of args":
     let want = want1
-    let got = parseArgs(@["/", "c", "-c", "1-15", "/", "cut", "--characters", "1,2,3", "/", "c.txt", "d.txt"])
+    let got = parseActions(@["/", "c", "-c", "1-15", "/", "cut", "--characters", "1,2,3", "/", "c.txt", "d.txt"])
     checkAction(akCut, want, got)
   test "normal: first argument is any character":
     let want = want1
-    let got = parseArgs(@[":", "c", "-c", "1-15", ":", "cut", "--characters", "1,2,3", ":", "c.txt", "d.txt"])
+    let got = parseActions(@[":", "c", "-c", "1-15", ":", "cut", "--characters", "1,2,3", ":", "c.txt", "d.txt"])
     checkAction(akCut, want, got)
   test "abnormal: the last part must have 2 files":
     expect(InvalidArgsError):
-      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/"])
+      discard parseActions(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/"])
     expect(InvalidArgsError):
-      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/", "c.txt"])
+      discard parseActions(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/", "c.txt"])
     expect(InvalidArgsError):
-      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/", "c.txt", "d.txt", "f.txt"])
+      discard parseActions(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3", "/", "c.txt", "d.txt", "f.txt"])
   test "abnormal: args must have 3 parts":
     expect(InvalidArgsError):
-      discard parseArgs(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3"])
+      discard parseActions(@["/", "c", "-c", "1-15", "/", "c", "-c", "1,2,3"])
     expect(InvalidArgsError):
-      discard parseArgs(@["c", "-c", "1-15"])
+      discard parseActions(@["c", "-c", "1-15"])
   test "abnormal: need args":
     expect(InvalidArgsError):
-      discard parseArgs(@[])
+      discard parseActions(@[])
     expect(InvalidArgsError):
-      discard parseArgs(@["/"])
+      discard parseActions(@["/"])
     expect(InvalidArgsError):
-      discard parseArgs(@["/", "/"])
+      discard parseActions(@["/", "/"])
 

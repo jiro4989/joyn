@@ -22,7 +22,7 @@ type
     secondFile*: string
   InvalidArgsError* = object of CatchableError
 
-proc getArgsAndDelete(args: var seq[string], delim: string): ActionParam =
+proc getActionAndDelete(args: var seq[string], delim: string): ActionParam =
   var m = args.high
   var parts: seq[string]
   for i in 0..m:
@@ -52,15 +52,15 @@ proc getArgsAndDelete(args: var seq[string], delim: string): ActionParam =
     raise newException(InvalidArgsError, "error TODO")
 
 
-proc parseArgs*(args: seq[string]): Args =
+proc parseActions*(args: seq[string]): Args =
   if args.len < 7:
     raise newException(InvalidArgsError, "need args")
   var args = args
   let delim = args[0]
   args.delete(0, 0)
 
-  result.firstAction = getArgsAndDelete(args, delim)
-  result.secondAction = getArgsAndDelete(args, delim)
+  result.firstAction = getActionAndDelete(args, delim)
+  result.secondAction = getActionAndDelete(args, delim)
 
   if args.len != 2:
     raise newException(InvalidArgsError, "need 2 files in last parts")
@@ -68,7 +68,7 @@ proc parseArgs*(args: seq[string]): Args =
   result.firstFile = args[0]
   result.secondFile = args[1]
 
-proc parseArgs2*(args: seq[string]): Args =
+proc parseArgs*(args: seq[string]): Args =
   var pos: int
   var pref: seq[string]
   for i, arg in args:
@@ -81,5 +81,5 @@ proc parseArgs2*(args: seq[string]): Args =
     option("-o", "--format", default = "")
 
   let opts = p.parse(pref)
-  result = args[pos+1 .. ^1].parseArgs()
+  result = args[pos+1 .. ^1].parseActions()
   result.format = opts.format
