@@ -4,6 +4,9 @@ joyn
 
 |nimble-version| |nimble-install| |gh-actions|
 
+joyn joins lines of two files with a common characters, field or regular expression.
+joyn is heavily inspired by `coreutils/join <https://github.com/coreutils/coreutils>`_.
+
 .. contents:: Table of contents
 
 Usage

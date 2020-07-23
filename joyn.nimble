@@ -2,7 +2,7 @@
 
 version       = "0.1.1"
 author        = "jiro4989"
-description   = "TODO"
+description   = "joyn joins lines of two files with a common characters, field or regular expression."
 license       = "MIT"
 srcDir        = "src"
 bin           = @["joyn"]

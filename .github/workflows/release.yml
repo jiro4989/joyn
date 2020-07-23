@@ -56,17 +56,17 @@ jobs:
           maintainer: ${{ env.MAINTAINER }}
           version: ${{ github.ref }}
           arch: 'amd64'
-          desc: 'TODO'
+          desc: 'joyn joins lines of two files with a common characters, field or regular expression.'
 
       - uses: jiro4989/build-rpm-action@v2
         with:
-          summary: 'TODO'
+          summary: 'joyn joins lines of two files with a common characters, field or regular expression.'
           package: ${{ env.APP_NAME }}
           package_root: .rpmpkg
           maintainer: ${{ env.MAINTAINER }}
           version: ${{ github.ref }}
           arch: 'x86_64'
-          desc: 'TODO'
+          desc: 'joyn joins lines of two files with a common characters, field or regular expression.'
 
       - uses: actions/upload-artifact@v2
         with:
