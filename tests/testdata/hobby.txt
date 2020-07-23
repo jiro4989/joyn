@@ -1,0 +1,6 @@
+id hobby
+1 soccer
+2 baseball
+3 running
+4 cokking
+5 sleep
