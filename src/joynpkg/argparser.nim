@@ -17,6 +17,7 @@ type
   Args* = object
     format*: string
     outfile*: string
+    delim*: string
     firstAction*: ActionParam
     firstFile*: string
     secondAction*: ActionParam
@@ -90,8 +91,10 @@ proc parseArgs*(args: seq[string]): Args =
   var p = newParser("joyn"):
     option("-o", "--format", default = "")
     option("-O", "--outfile", default = "")
+    option("-d", "--delimiter", default = " ")
 
   let opts = p.parse(pref)
   result = args[pos+1 .. ^1].parseActions()
   result.format = opts.format
   result.outfile = opts.outfile
+  result.delim = opts.delimiter
