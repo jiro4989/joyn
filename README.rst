@@ -47,7 +47,7 @@ Joining CSV fields
   9,john,5 5 sleep
   10,bob,2 2 baseball
 
-`-o` controls output fields.
+``-o`` controls output fields.
 
 .. code-block:: shell
 
@@ -110,7 +110,7 @@ Joining log files and CSV by regular expression
   2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
   2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
 
-`-o` controls output fields by named capturing group.
+``-o`` controls output fields by named capturing group.
 
 .. code-block:: shell
 
