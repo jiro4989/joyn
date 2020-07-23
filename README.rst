@@ -74,16 +74,16 @@ Joining log files and CSV by regular expression
   2020-01-02 02:33:20 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s
   2020-01-02 02:33:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s
   2020-01-02 02:33:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/login 200 Firefox 20s
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s
-  2020-01-02 07:06:20 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/login 200 Firefox 20s
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s
-  2020-01-02 05:49:46 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/login 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] POST /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile/edit 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile 200 Firefox 20s
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/logout 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/login 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] POST /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile/edit 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile 200 Firefox 20s
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/logout 200 Firefox 20s
 
   $ cat tests/testdata/user2.csv
   id,name
@@ -99,37 +99,37 @@ Joining log files and CSV by regular expression
   2020-01-02 02:33:20 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
   2020-01-02 02:33:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
   2020-01-02 02:33:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/login 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 07:06:20 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 07:06:20 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/login 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 05:49:46 [INFO] POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
-  2020-01-02 05:49:46 [INFO] GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout 200 Firefox 20s 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9,john
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/login 200 Firefox 20s a31743ac-41ab-42bb-bee2-8825ddbe9f35,ichiro
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile 200 Firefox 20s a31743ac-41ab-42bb-bee2-8825ddbe9f35,ichiro
+  2020-01-02 07:06:20 [INFO] POST /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile/edit 200 Firefox 20s a31743ac-41ab-42bb-bee2-8825ddbe9f35,ichiro
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile 200 Firefox 20s a31743ac-41ab-42bb-bee2-8825ddbe9f35,ichiro
+  2020-01-02 07:06:20 [INFO] GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/logout 200 Firefox 20s a31743ac-41ab-42bb-bee2-8825ddbe9f35,ichiro
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/login 200 Firefox 20s 6ddbfb64-0b7b-488f-8300-e34cd243d4aa,taro
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile 200 Firefox 20s 6ddbfb64-0b7b-488f-8300-e34cd243d4aa,taro
+  2020-01-02 05:49:46 [INFO] POST /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile/edit 200 Firefox 20s 6ddbfb64-0b7b-488f-8300-e34cd243d4aa,taro
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile 200 Firefox 20s 6ddbfb64-0b7b-488f-8300-e34cd243d4aa,taro
+  2020-01-02 05:49:46 [INFO] GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/logout 200 Firefox 20s 6ddbfb64-0b7b-488f-8300-e34cd243d4aa,taro
 
 ``-o`` controls output fields by named capturing group.
 
 .. code-block:: shell
 
-  $ joyn -o '1.id,2.2' -- / g '\s/([^/]+)/[^s]+\s' -g '\s/(?P<id>[^/]+)/[^s]+\s' / c -d ',' -f 1 / tests/testdata/app.log tests/testdata/user2.csv
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
-  0fe2db6f-58b6-4835-9e24-200a2ac8f0a9 john
+  $ joyn -o '1.1,1.2,1.4,1.5,2.2,1.id' -- / g '\s/([^/]+)/[^s]+\s' -d ' ' -g '\s/(?P<id>[^/]+)/[^s]+\s' / c -d ',' -f 1 / tests/testdata/app.log tests/testdata/user2.csv
+  2020-01-02 02:33:20 GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/login john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
+  2020-01-02 02:33:20 GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
+  2020-01-02 02:33:20 POST /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile/edit john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
+  2020-01-02 02:33:20 GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/profile john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
+  2020-01-02 02:33:20 GET /0fe2db6f-58b6-4835-9e24-200a2ac8f0a9/logout john 0fe2db6f-58b6-4835-9e24-200a2ac8f0a9
+  2020-01-02 07:06:20 GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/login ichiro a31743ac-41ab-42bb-bee2-8825ddbe9f35
+  2020-01-02 07:06:20 GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile ichiro a31743ac-41ab-42bb-bee2-8825ddbe9f35
+  2020-01-02 07:06:20 POST /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile/edit ichiro a31743ac-41ab-42bb-bee2-8825ddbe9f35
+  2020-01-02 07:06:20 GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/profile ichiro a31743ac-41ab-42bb-bee2-8825ddbe9f35
+  2020-01-02 07:06:20 GET /a31743ac-41ab-42bb-bee2-8825ddbe9f35/logout ichiro a31743ac-41ab-42bb-bee2-8825ddbe9f35
+  2020-01-02 05:49:46 GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/login taro 6ddbfb64-0b7b-488f-8300-e34cd243d4aa
+  2020-01-02 05:49:46 GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile taro 6ddbfb64-0b7b-488f-8300-e34cd243d4aa
+  2020-01-02 05:49:46 POST /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile/edit taro 6ddbfb64-0b7b-488f-8300-e34cd243d4aa
+  2020-01-02 05:49:46 GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/profile taro 6ddbfb64-0b7b-488f-8300-e34cd243d4aa
+  2020-01-02 05:49:46 GET /6ddbfb64-0b7b-488f-8300-e34cd243d4aa/logout taro 6ddbfb64-0b7b-488f-8300-e34cd243d4aa
 
 Installation
 ============
