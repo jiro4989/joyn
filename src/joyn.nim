@@ -56,7 +56,6 @@ proc capturingGroup(s: string, pattern: Regex): Table[string, string] =
 
 iterator doMain(args: Args): string =
   var firstStream = args.firstFile.newFileStream(fmRead)
-  var secondStream: Stream
 
   defer:
     firstStream.close
@@ -96,9 +95,9 @@ iterator doMain(args: Args): string =
               for k, v in rightLine.capturingGroup(args.secondAction.group):
                 ri[k] = v
 
-            formatGroup(args.format, " ", li, ri)
+            formatGroup(args.format, args.delim, li, ri)
           else:
-            leftLine & " " & rightLine
+            leftLine & args.delim & rightLine
         yield line
     secondStream.close
 
