@@ -1,19 +1,13 @@
 import strutils, streams, tables, unicode
 from os import commandLineParams
-from sequtils import toSeq
-from algorithm import sorted
 
 import regex
 
-import joynpkg/argparser
+import joynpkg/[argparser, actions]
 
 const
   version = "v0.1.0"
   slideWindowWidth = 1000
-
-type
-  InvalidCharacterParamError = object of CatchableError
-  InvalidOutputFormatError = object of CatchableError
 
 template decho(x) =
   when not defined release:
@@ -24,75 +18,6 @@ proc toIndexTable(s, delim: string): Table[string, string] =
   for f in s.split(delim):
     inc i
     result[$i] = f
-
-proc parseByCharacter(s, param: string): string =
-  template raiseErr = raise newException(InvalidCharacterParamError, "need parameter")
-
-  if param.len < 1:
-    raiseErr()
-
-  let
-    runes = s.toRunes
-    cols = param.split(",")
-  var
-    poses: Table[int, bool]
-
-  for col in cols:
-    if col.len < 1:
-      raiseErr()
-    let
-      beginEnd = col.split("-")
-    if 2 <= beginEnd.len:
-      let
-        beginStr = beginEnd[0]
-        endStr = beginEnd[1]
-      if beginStr.len < 1 and endStr.len < 1:
-        raiseErr()
-      var
-        beginNum = 1
-        endNum = runes.len
-      if beginStr != "":
-        beginNum = beginStr.parseInt
-      if endStr != "":
-        endNum = endStr.parseInt
-      for i in beginNum .. endNum:
-        if runes.len < i:
-          raiseErr()
-        poses[i-1] = true
-      continue
-    let i = col.parseInt
-    if runes.len < i:
-      raiseErr()
-    poses[i-1] = true
-
-  for k in toSeq(poses.keys).sorted:
-    result.add(runes[k])
-
-proc parseByField(s, delim, field: string): string =
-  let cols = s.split(delim)
-  try:
-    let index = field.parseInt - 1
-    if cols.len <= index:
-      return
-    result = cols[index]
-  except:
-    # TODO:
-    discard
-
-proc parseByRegexp(s, regexp: string): string =
-  let pattern = re(regexp)
-  var match: RegexMatch
-  if s.find(pattern, match):
-    if 0 < match.groupsCount:
-      for bounds in match.group(0):
-        return s[bounds]
-
-proc capturingGroup(s, regexp: string): Table[string, string] =
-  let pattern =  re(regexp)
-  var match: RegexMatch
-  if s.find(pattern, match):
-    for name in match.groupNames:
-      result[name] = match.groupFirstCapture(name, s)
 
 proc formatGroup(f, delim: string, first: Table[string, string], second: Table[string, string]): string =
   var buf: string
@@ -122,6 +47,13 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
     addField()
 
   result = fields.join(delim)
+
+proc capturingGroup(s, regexp: string): Table[string, string] =
+  let pattern =  re(regexp)
+  var match: RegexMatch
+  if s.find(pattern, match):
+    for name in match.groupNames:
+      result[name] = match.groupFirstCapture(name, s)
 
 proc main(args: seq[string]): int =
   let args = parseArgs(args)
