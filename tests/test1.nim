@@ -7,13 +7,13 @@ suite "proc capturingGroup":
     let want = {"user_id": "1234"}.toTable
     let got = capturingGroup(
       "user_name:bob user_id:1234 email:hogehoge@example.com",
-      string".*user_id:(?P<user_id>[^\s]+).*")
+      re".*user_id:(?P<user_id>[^\s]+).*")
     check want == got
   test "normal":
     let want = {"user_id": "1234", "email": "hogehoge@example.com"}.toTable
     let got = capturingGroup(
       "user_name:bob user_id:1234 email:hogehoge@example.com",
-      string"user_id:(?P<user_id>[^\s]+) .*email:(?P<email>[^\s]+)")
+      re"user_id:(?P<user_id>[^\s]+) .*email:(?P<email>[^\s]+)")
     check want == got
 
 suite "proc formatGroup":

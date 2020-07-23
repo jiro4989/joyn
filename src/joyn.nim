@@ -48,8 +48,7 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
 
   result = fields.join(delim)
 
-proc capturingGroup(s, regexp: string): Table[string, string] =
-  let pattern =  re(regexp)
+proc capturingGroup(s: string, pattern: Regex): Table[string, string] =
   var match: RegexMatch
   if s.find(pattern, match):
     for name in match.groupNames:
@@ -86,12 +85,12 @@ proc main(args: seq[string]): int =
         let line =
           if 0 < args.format.len:
             var li = leftLine.toIndexTable(args.firstAction.delim)
-            if args.firstAction.kind == akGrep and args.firstAction.group != "":
+            if args.firstAction.kind == akGrep:
               for k, v in leftLine.capturingGroup(args.firstAction.group):
                 li[k] = v
 
             var ri = rightLine.toIndexTable(args.secondAction.delim)
-            if args.secondAction.kind == akGrep and args.secondAction.group != "":
+            if args.secondAction.kind == akGrep:
               for k, v in rightLine.capturingGroup(args.secondAction.group):
                 ri[k] = v
 

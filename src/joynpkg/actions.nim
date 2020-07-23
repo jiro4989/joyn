@@ -58,8 +58,7 @@ proc cutByField*(s, delim: string, field: int): string =
     return
   result = cols[index]
 
-proc searchByRegexp*(s, regexp: string): string =
-  let pattern = re(regexp)
+proc searchByRegexp*(s: string, pattern: Regex): string =
   var match: RegexMatch
   if s.find(pattern, match):
     if 0 < match.groupsCount:
