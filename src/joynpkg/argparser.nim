@@ -10,7 +10,7 @@ type
     case kind*: ActionKind
     of akCut:
       chars*: string
-      fields*: string
+      field*: int
     of akGrep:
       pattern*: string
       group*: string
@@ -37,10 +37,15 @@ proc getActionAndDelete(args: var seq[string], delim: string): ActionParam =
   of "cut", "c":
     var p = newParser("cut"):
       option("-c", "--characters", default = "")
-      option("-f", "--fields", default = "")
+      option("-f", "--field", default = "-1")
       option("-d", "--delimiter", default = " ")
     let opts = p.parse(parts[1..^1])
-    result = ActionParam(kind: akCut, chars: opts.characters, fields: opts.fields, delim: opts.delimiter)
+    let field =
+      try:
+        opts.field.parseInt
+      except:
+        raise newException(InvalidArgsError, "'-f' or '--field' is invalid number: " & opts.field)
+    result = ActionParam(kind: akCut, chars: opts.characters, field: field, delim: opts.delimiter)
   of "grep", "g":
     var p = newParser("regexp"):
       option("-g", "--group", default = "")

@@ -6,7 +6,7 @@ template checkAction(k, want, got) =
   case k
   of akCut:
     check want.firstAction.chars == got.firstAction.chars
-    check want.firstAction.fields == got.firstAction.fields
+    check want.firstAction.field == got.firstAction.field
     check want.firstAction.delim == got.firstAction.delim
   of akGrep:
     check want.firstAction.pattern == got.firstAction.pattern
@@ -19,12 +19,14 @@ suite "proc parseActions":
         kind: akCut,
         chars: "1-15",
         delim: " ",
+        field: -1,
         ),
       firstFile: "c.txt",
       secondAction: ActionParam(
         kind: akCut,
         chars: "1,2,3",
         delim: " ",
+        field: -1,
         ),
       secondFile: "d.txt",
     )

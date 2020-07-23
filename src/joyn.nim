@@ -67,8 +67,8 @@ proc main(args: seq[string]): int =
     of akCut:
       if 0 < act.chars.len:
         cutByCharacter(line, act.chars)
-      elif 0 < act.fields.len:
-        cutByField(line, act.delim, act.fields)
+      elif 0 < act.field:
+        cutByField(line, act.delim, act.field)
       else:
         raise newException(InvalidArgsError, "error TODO")
     of akGrep:

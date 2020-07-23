@@ -74,17 +74,17 @@ suite "proc cutByField":
       s2 = "1,japan,日本,east,東洋"
   test "normal: first field":
     let want = "1"
-    let got = cutByField(s1, " ", "1")
+    let got = cutByField(s1, " ", 1)
     check want == got
   test "normal: second field":
     let want = "japan"
-    let got = cutByField(s1, " ", "2")
+    let got = cutByField(s1, " ", 2)
     check want == got
   test "normal: last field":
     let want = "東洋"
-    let got = cutByField(s1, " ", "5")
+    let got = cutByField(s1, " ", 5)
     check want == got
   test "normal: comma delimiter":
     let want = "日本"
-    let got = cutByField(s2, ",", "3")
+    let got = cutByField(s2, ",", 3)
     check want == got
