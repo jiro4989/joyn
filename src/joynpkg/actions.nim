@@ -51,19 +51,14 @@ proc cutByCharacter*(s, param: string): string =
   for k in toSeq(poses.keys).sorted:
     result.add(runes[k])
 
-proc cutByField*(s, delim, field: string): string =
+proc cutByField*(s, delim: string, field: int): string =
   let cols = s.split(delim)
-  try:
-    let index = field.parseInt - 1
-    if cols.len <= index:
-      return
-    result = cols[index]
-  except:
-    # TODO:
-    discard
+  let index = field - 1
+  if index < 0 or cols.len <= index:
+    return
+  result = cols[index]
 
-proc searchByRegexp*(s, regexp: string): string =
-  let pattern = re(regexp)
+proc searchByRegexp*(s: string, pattern: Regex): string =
   var match: RegexMatch
   if s.find(pattern, match):
     if 0 < match.groupsCount:

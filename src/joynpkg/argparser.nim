@@ -1,19 +1,19 @@
 from sequtils import delete
 
-import argparse
+import regex, argparse
 
 type
   ActionKind* = enum
     akCut, akGrep
-  ActionParam = object
+  ActionParam* = object
     delim*: string
     case kind*: ActionKind
     of akCut:
       chars*: string
-      fields*: string
+      field*: int
     of akGrep:
-      pattern*: string
-      group*: string
+      pattern*: Regex
+      group*: Regex
   Args* = object
     format*: string
     firstAction*: ActionParam
@@ -37,17 +37,26 @@ proc getActionAndDelete(args: var seq[string], delim: string): ActionParam =
   of "cut", "c":
     var p = newParser("cut"):
       option("-c", "--characters", default = "")
-      option("-f", "--fields", default = "")
+      option("-f", "--field", default = "-1")
       option("-d", "--delimiter", default = " ")
     let opts = p.parse(parts[1..^1])
-    result = ActionParam(kind: akCut, chars: opts.characters, fields: opts.fields, delim: opts.delimiter)
+    let field =
+      try: opts.field.parseInt
+      except: raise newException(InvalidArgsError, "'-f' or '--field' is invalid number: " & opts.field)
+    result = ActionParam(kind: akCut, chars: opts.characters, field: field, delim: opts.delimiter)
   of "grep", "g":
     var p = newParser("regexp"):
       option("-g", "--group", default = "")
       option("-d", "--delimiter", default = " ")
       arg("pattern")
     let opts = p.parse(parts[1..^1])
-    result = ActionParam(kind: akGrep, group: opts.group, pattern: opts.pattern, delim: opts.delimiter)
+    let group =
+      try: re(opts.group)
+      except: raise newException(InvalidArgsError, "'-g' or '--group' is invalid regexp: " & opts.group)
+    let pattern =
+      try: re(opts.pattern)
+      except: raise newException(InvalidArgsError, "searching pattern is invalid regexp: " & opts.pattern)
+    result = ActionParam(kind: akGrep, group: group, pattern: pattern, delim: opts.delimiter)
   else:
     raise newException(InvalidArgsError, "error TODO")
 

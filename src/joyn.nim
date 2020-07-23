@@ -48,16 +48,15 @@ proc formatGroup(f, delim: string, first: Table[string, string], second: Table[s
 
   result = fields.join(delim)
 
-proc capturingGroup(s, regexp: string): Table[string, string] =
-  let pattern =  re(regexp)
+proc capturingGroup(s: string, pattern: Regex): Table[string, string] =
   var match: RegexMatch
   if s.find(pattern, match):
     for name in match.groupNames:
       result[name] = match.groupFirstCapture(name, s)
 
-proc main(args: seq[string]): int =
-  let args = parseArgs(args)
+iterator doMain(args: Args): string =
   var firstStream = args.firstFile.newFileStream(fmRead)
+  var secondStream: Stream
 
   defer:
     firstStream.close
@@ -67,8 +66,8 @@ proc main(args: seq[string]): int =
     of akCut:
       if 0 < act.chars.len:
         cutByCharacter(line, act.chars)
-      elif 0 < act.fields.len:
-        cutByField(line, act.delim, act.fields)
+      elif 0 < act.field:
+        cutByField(line, act.delim, act.field)
       else:
         raise newException(InvalidArgsError, "error TODO")
     of akGrep:
@@ -86,21 +85,25 @@ proc main(args: seq[string]): int =
         let line =
           if 0 < args.format.len:
             var li = leftLine.toIndexTable(args.firstAction.delim)
-            if args.firstAction.kind == akGrep and args.firstAction.group != "":
+            if args.firstAction.kind == akGrep:
               for k, v in leftLine.capturingGroup(args.firstAction.group):
                 li[k] = v
 
             var ri = rightLine.toIndexTable(args.secondAction.delim)
-            if args.secondAction.kind == akGrep and args.secondAction.group != "":
+            if args.secondAction.kind == akGrep:
               for k, v in rightLine.capturingGroup(args.secondAction.group):
                 ri[k] = v
 
             formatGroup(args.format, " ", li, ri)
           else:
             leftLine & " " & rightLine
-        echo line
+        yield line
     secondStream.close
-    secondStream = args.secondFile.newFileStream(fmRead)
+
+proc main(args: seq[string]): int =
+  let args = parseArgs(args)
+  for line in doMain(args):
+    echo line
 
 when isMainModule and not defined modeTest:
   quit main(commandLineParams())
