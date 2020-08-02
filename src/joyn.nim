@@ -1,12 +1,17 @@
 import strutils, streams, tables, unicode
 from os import commandLineParams
+from strformat import `&`
 
 import regex
 
 import joynpkg/[argparser, actions]
 
 const
-  version = "v0.1.0"
+  appName = "joyn"
+  version = &"""{appName} command version 0.2.0
+Copyright (c) 2020 jiro4989
+Released under the MIT License.
+https://github.com/jiro4989/joyn"""
   slideWindowWidth = 1000
 
 template decho(x) =
@@ -103,6 +108,9 @@ iterator doMain(args: Args): string =
 
 proc main(args: seq[string]): int =
   let args = parseArgs(args)
+  if args.version:
+    echo version
+    return
 
   if args.outfile.len == 0:
     for line in doMain(args):

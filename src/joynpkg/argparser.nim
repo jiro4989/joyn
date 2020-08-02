@@ -15,6 +15,7 @@ type
       pattern*: Regex
       group*: Regex
   Args* = object
+    version*: bool
     format*: string
     outfile*: string
     delim*: string
@@ -92,8 +93,13 @@ proc parseArgs*(args: seq[string]): Args =
     option("-o", "--format", default = "")
     option("-O", "--outfile", default = "")
     option("-d", "--delimiter", default = " ")
+    flag("-v", "--version")
 
   let opts = p.parse(pref)
+  if opts.version:
+    result.version = opts.version
+    return
+
   result = args[pos+1 .. ^1].parseActions()
   result.format = opts.format
   result.outfile = opts.outfile
