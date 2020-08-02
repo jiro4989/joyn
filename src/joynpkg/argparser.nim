@@ -2,6 +2,39 @@ from sequtils import delete
 
 import regex, argparse
 
+const
+  helpDoc = """joyn joins lines of two files with a common characters, field or regular expression.
+
+Usage:
+  joyn [options...] -- <delimiter> <action> [args...] <delimiter> <action> [args...] <delimiter> <left_source_file> <right_source_file>
+
+Actions:
+  c, cut   character mode
+  g, grep  regular expression mode
+
+Options of actions:
+  grep
+    -g, --group <group>         named capturing group.
+    -d, --delimiter <delimiter> [default: " "]
+
+  cut
+    -c, --characters <characters>
+    -f, --field <field>
+    -d, --delimiter <delimiter>
+
+Examples:
+  joyn -- / c -d , -f 3 / c -d " " -f 1 / tests/testdata/user.csv tests/testdata/hobby.txt
+
+  joyn -o '1.1,1.2,2.2' -- / c -d , -f 3 / c -d " " -f 1 / tests/testdata/user.csv tests/testdata/hobby.txt
+
+  joyn -- / g '\s/([^/]+)/[^s]+\s' / c -d ',' -f 1 / tests/testdata/app.log tests/testdata/user2.csv
+
+  joyn -o '1.1,1.2,1.4,1.5,2.2,1.id' -- \
+    / g '\s/([^/]+)/[^s]+\s' -d ' ' -g '\s/(?P<id>[^/]+)/[^s]+\s' \
+    / c -d ',' -f 1 \
+    / tests/testdata/app.log tests/testdata/user2.csv
+"""
+
 type
   ActionKind* = enum
     akCut, akGrep
@@ -90,6 +123,7 @@ proc parseArgs*(args: seq[string]): Args =
     pref.add(arg)
 
   var p = newParser("joyn"):
+    help(helpDoc)
     option("-o", "--format", default = "")
     option("-O", "--outfile", default = "")
     option("-d", "--delimiter", default = " ")
