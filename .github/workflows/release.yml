@@ -7,7 +7,7 @@ on:
 
 env:
   APP_NAME: 'joyn'
-  NIM_VERSION: 'stable'
+  NIM_VERSION: '1.2.6'
   MAINTAINER: 'jiro4989'
 
 jobs:
