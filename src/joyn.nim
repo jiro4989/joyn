@@ -18,11 +18,14 @@ template decho(x) =
   when not defined release:
     debugEcho x
 
-proc toIndexTable(s, delim: string): Table[string, string] =
+proc toIndexTable(s, delim: string, outerJoin = false): Table[string, string] =
   var i: int
   for f in s.split(delim):
     inc i
-    result[$i] = f
+    if outerjoin:
+      result[$i] = "NULL"
+    else:
+      result[$i] = f
 
 proc formatGroup(f, delim: string, first: Table[string, string], second: Table[string, string]): string =
   var buf: string
@@ -107,6 +110,23 @@ iterator doMain(args: Args): string =
           else:
             leftLine & args.delim & rightLine
         yield line
+      elif args.firstAction.outerJoin:
+        let line =
+          if 0 < args.format.len:
+            var li = leftLine.toIndexTable(args.firstAction.delim)
+            li["0"] = leftLine
+            if args.firstAction.kind == akGrep:
+              for k, v in leftLine.capturingGroup(args.firstAction.group):
+                li[k] = v
+
+            var ri = rightLine.toIndexTable(args.secondAction.delim, outerJoin=true)
+            ri["0"] = rightLine
+
+            formatGroup(args.format, args.delim, li, ri)
+          else:
+            leftLine & args.delim & rightLine
+        yield line
+
     secondStream.close
 
 proc main(args: seq[string]): int =

@@ -47,6 +47,7 @@ type
     of akGrep:
       pattern*: Regex
       group*: Regex
+    outerJoin*: bool
   Args* = object
     version*: bool
     format*: string
@@ -75,15 +76,21 @@ proc getActionAndDelete(args: var seq[string], delim: string): ActionParam =
       option("-c", "--characters", default = "")
       option("-f", "--field", default = "-1")
       option("-d", "--delimiter", default = " ")
+      flag("-a", "--outer-join")
     let opts = p.parse(parts[1..^1])
     let field =
       try: opts.field.parseInt
       except: raise newException(InvalidArgsError, "'-f' or '--field' is invalid number: " & opts.field)
-    result = ActionParam(kind: akCut, chars: opts.characters, field: field, delim: opts.delimiter)
+    result = ActionParam(kind: akCut,
+                         chars: opts.characters,
+                         field: field,
+                         delim: opts.delimiter,
+                         outerJoin: opts.outerJoin)
   of "grep", "g":
     var p = newParser("regexp"):
       option("-g", "--group", default = "")
       option("-d", "--delimiter", default = " ")
+      flag("-a", "--outer-join")
       arg("pattern")
     let opts = p.parse(parts[1..^1])
     let group =
@@ -92,7 +99,11 @@ proc getActionAndDelete(args: var seq[string], delim: string): ActionParam =
     let pattern =
       try: re(opts.pattern)
       except: raise newException(InvalidArgsError, "searching pattern is invalid regexp: " & opts.pattern)
-    result = ActionParam(kind: akGrep, group: group, pattern: pattern, delim: opts.delimiter)
+    result = ActionParam(kind: akGrep,
+                         group: group,
+                         pattern: pattern,
+                         delim: opts.delimiter,
+                         outerJoin: opts.outerJoin)
   else:
     raise newException(InvalidArgsError, "error TODO")
 
