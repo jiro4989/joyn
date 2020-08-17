@@ -81,6 +81,9 @@ iterator doMain(args: Args): string =
     let leftLine = firstStream.readLine
     let leftGot = action(leftLine, args.firstAction)
 
+    if leftGot == "":
+      continue
+
     var secondStream = args.secondFile.newFileStream(fmRead)
     while not secondStream.atEnd:
       let rightLine = secondStream.readLine
