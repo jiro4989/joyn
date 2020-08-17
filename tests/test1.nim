@@ -65,6 +65,22 @@ suite "iterator doMain":
     for line in doMain(args):
       got.add(line)
     check want == got
+  test "normal: cut field and cut field and outer join":
+    let want = @[
+      "1 taro foo",
+      "1 taro NULL",
+      "2 john NULL",
+      "2 john NULL",
+    ]
+    writeFile(ff, "1,taro\n2,john")
+    writeFile(sf, "1,foo\n3,bar")
+    let fact = ActionParam(kind: akCut, delim: ",", field: 1, outerJoin: true)
+    let sact = ActionParam(kind: akCut, delim: ",", field: 1)
+    let args = Args(delim: " ", format: "1.1,1.2,2.2", firstAction: fact, secondAction: sact, firstFile: ff, secondFile: sf)
+    var got: seq[string]
+    for line in doMain(args):
+      got.add(line)
+    check want == got
   test "normal: grep and grep":
     let want = @["abcd HELLO WORLD,abcd"]
     writeFile(ff, "AA 1234\nabcd HELLO")
